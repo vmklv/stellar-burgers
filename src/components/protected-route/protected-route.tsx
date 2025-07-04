@@ -1,5 +1,8 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from '../../services/store';
+import { selectIsAuth } from '../../services/selectors/user';
+import { fetchUser } from '../../services/slices/user';
 
 interface IProtectedRouteProps {
   onlyUnAuth?: boolean;
@@ -10,8 +13,14 @@ export const ProtectedRoute: FC<IProtectedRouteProps> = ({
   onlyUnAuth = false,
   children
 }) => {
-  /** TODO: заменить на получение данных из стора */
-  const isAuth = false;
+  const dispatch = useDispatch();
+  const isAuth = useSelector(selectIsAuth);
+
+  useEffect(() => {
+    if (!isAuth && localStorage.getItem('refreshToken')) {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, isAuth]);
 
   const location = useLocation();
 
