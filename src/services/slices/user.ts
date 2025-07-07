@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { loginUserApi, getUserApi, logoutApi, TLoginData } from '@api';
+import {
+  loginUserApi,
+  getUserApi,
+  logoutApi,
+  registerUserApi,
+  TLoginData,
+  TRegisterData
+} from '@api';
 import { setCookie, deleteCookie } from '../../utils/cookie';
 
 type TUserState = {
@@ -19,6 +26,16 @@ export const loginUser = createAsyncThunk(
   'user/loginUser',
   async (form: TLoginData) => {
     const data = await loginUserApi(form);
+    setCookie('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return data.user;
+  }
+);
+
+export const registerUser = createAsyncThunk(
+  'user/registerUser',
+  async (form: TRegisterData) => {
+    const data = await registerUserApi(form);
     setCookie('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     return data.user;
@@ -52,6 +69,19 @@ const userSlice = createSlice({
         state.userFailed = false;
       })
       .addCase(loginUser.rejected, (state) => {
+        state.userRequest = false;
+        state.userFailed = true;
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.userRequest = true;
+        state.userFailed = false;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.userRequest = false;
+        state.userFailed = false;
+      })
+      .addCase(registerUser.rejected, (state) => {
         state.userRequest = false;
         state.userFailed = true;
       })
