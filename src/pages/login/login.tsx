@@ -1,6 +1,6 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch, useSelector } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { loginUser } from '../../services/slices/user';
 import { selectIsAuth } from '../../services/selectors/user';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
@@ -9,8 +9,8 @@ export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string>('');
-  const dispatch = useDispatch();
-  const isAuth = useSelector(selectIsAuth);
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
   const navigate = useNavigate();
   const location = useLocation();
 

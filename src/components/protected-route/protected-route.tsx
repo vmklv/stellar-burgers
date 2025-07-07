@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from '../../services/store';
+import { useAppSelector, useAppDispatch } from '../../services/store';
 import { selectIsAuth } from '../../services/selectors/user';
 import { fetchUser } from '../../services/slices/user';
 
@@ -13,8 +13,8 @@ export const ProtectedRoute: FC<IProtectedRouteProps> = ({
   onlyUnAuth = false,
   children
 }) => {
-  const dispatch = useDispatch();
-  const isAuth = useSelector(selectIsAuth);
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
 
   useEffect(() => {
     if (!isAuth && localStorage.getItem('refreshToken')) {

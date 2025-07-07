@@ -1,22 +1,17 @@
 import { FC, useMemo } from 'react';
-import { TConstructorIngredient, TConstructorItems } from '@utils-types';
+import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useSelector } from '../../services/store';
+import { useAppSelector } from '../../services/store';
 import { selectIsAuth } from '../../services/selectors/user';
 import { useNavigate } from 'react-router-dom';
+import { selectConstructor } from '../../services/selectors/burger-constructor';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems: TConstructorItems = {
-    bun: null,
-    ingredients: []
-  };
-
+  const constructorItems = useAppSelector(selectConstructor);
   const orderRequest = false;
-
   const orderModalData = null;
 
-  const isAuth = useSelector(selectIsAuth);
+  const isAuth = useAppSelector(selectIsAuth);
   const navigate = useNavigate();
 
   const onOrderClick = () => {
