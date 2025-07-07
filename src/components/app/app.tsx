@@ -32,13 +32,13 @@ import {
 const AppRoutes: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as { backgroundLocation?: Location } | undefined;
+  const state = location.state as { background?: Location } | undefined;
 
   const closeModal = () => navigate(-1);
 
   return (
     <>
-      <Routes location={state?.backgroundLocation || location}>
+      <Routes location={state?.background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route
@@ -92,7 +92,7 @@ const AppRoutes: FC = () => {
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {state?.backgroundLocation && (
+      {state?.background && (
         <Routes>
           <Route
             path='/feed/:number'
