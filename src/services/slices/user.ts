@@ -4,6 +4,7 @@ import {
   loginUserApi,
   getUserApi,
   logoutApi,
+  updateUserApi,
   registerUserApi,
   TLoginData,
   TRegisterData
@@ -14,12 +15,16 @@ type TUserState = {
   user: TUser | null;
   userRequest: boolean;
   userFailed: boolean;
+  updateUserRequest: boolean;
+  updateUserError: string | null;
 };
 
 const initialState: TUserState = {
   user: null,
   userRequest: false,
-  userFailed: false
+  userFailed: false,
+  updateUserRequest: false,
+  updateUserError: null
 };
 
 export const loginUser = createAsyncThunk(
@@ -53,6 +58,14 @@ export const logoutUser = createAsyncThunk('user/logoutUser', async () => {
   localStorage.removeItem('refreshToken');
 });
 
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async (form: Partial<TRegisterData>) => {
+    const data = await updateUserApi(form);
+    return data.user;
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -84,6 +97,19 @@ const userSlice = createSlice({
       .addCase(registerUser.rejected, (state) => {
         state.userRequest = false;
         state.userFailed = true;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.updateUserRequest = true;
+        state.updateUserError = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.updateUserRequest = false;
+        state.updateUserError = null;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.updateUserRequest = false;
+        state.updateUserError = action.error.message || null;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.user = action.payload;
