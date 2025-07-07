@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from '../../services/store';
+import { useAppSelector, useAppDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredients';
 import { selectIsIngredientsLoading } from '../../services/selectors/ingredients';
 
@@ -11,8 +11,8 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => {
-  const dispatch = useDispatch();
-  const isIngredientsLoading = useSelector(selectIsIngredientsLoading);
+  const dispatch = useAppDispatch();
+  const isIngredientsLoading = useAppSelector(selectIsIngredientsLoading);
 
   useEffect(() => {
     dispatch(fetchIngredients());
