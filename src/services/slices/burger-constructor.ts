@@ -26,9 +26,35 @@ const burgerConstructorSlice = createSlice({
       prepare: (ingredient: TIngredient) => ({
         payload: { ...ingredient, id: nanoid() }
       })
+    },
+    removeIngredient: (state, action: PayloadAction<string>) => {
+      state.ingredients = state.ingredients.filter(
+        (item) => item.id !== action.payload
+      );
+    },
+    moveIngredientUp: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      if (index > 0 && index < state.ingredients.length) {
+        const temp = state.ingredients[index - 1];
+        state.ingredients[index - 1] = state.ingredients[index];
+        state.ingredients[index] = temp;
+      }
+    },
+    moveIngredientDown: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      if (index >= 0 && index < state.ingredients.length - 1) {
+        const temp = state.ingredients[index + 1];
+        state.ingredients[index + 1] = state.ingredients[index];
+        state.ingredients[index] = temp;
+      }
     }
   }
 });
 
-export const { addIngredient } = burgerConstructorSlice.actions;
+export const {
+  addIngredient,
+  removeIngredient,
+  moveIngredientUp,
+  moveIngredientDown
+} = burgerConstructorSlice.actions;
 export const burgerConstructorReducer = burgerConstructorSlice.reducer;
