@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -28,6 +28,10 @@ import {
   OrderInfo,
   ProtectedRoute
 } from '@components';
+
+import { useAppDispatch, useAppSelector } from '../../services/store';
+import { selectIsAuth } from '../../services/selectors/user';
+import { fetchUser } from '../../services/slices/user';
 
 const AppRoutes: FC = () => {
   const location = useLocation();
@@ -126,13 +130,24 @@ const AppRoutes: FC = () => {
   );
 };
 
-const App: FC = () => (
-  <BrowserRouter>
-    <div className={styles.app}>
-      <AppHeader />
-      <AppRoutes />
-    </div>
-  </BrowserRouter>
-);
+const App: FC = () => {
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
+
+  useEffect(() => {
+    if (!isAuth && localStorage.getItem('refreshToken')) {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, isAuth]);
+
+  return (
+    <BrowserRouter>
+      <div className={styles.app}>
+        <AppHeader />
+        <AppRoutes />
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;
