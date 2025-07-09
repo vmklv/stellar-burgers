@@ -1,12 +1,24 @@
 import { RootState } from '../store';
 import { TOrder, TOrdersData } from '@utils-types';
+import { createSelector } from '@reduxjs/toolkit';
 
-export const selectFeedOrders = (state: RootState): TOrder[] =>
-  state.feed.orders;
-export const selectFeedInfo = (state: RootState): TOrdersData => ({
-  orders: state.feed.orders,
-  total: state.feed.total,
-  totalToday: state.feed.totalToday
-});
-export const selectIsFeedLoading = (state: RootState): boolean =>
-  state.feed.isLoading;
+const selectFeed = (state: RootState) => state.feed;
+
+export const selectFeedOrders = createSelector(
+  [selectFeed],
+  (feed): TOrder[] => feed.orders
+);
+
+export const selectFeedInfo = createSelector(
+  [selectFeed],
+  (feed): TOrdersData => ({
+    orders: feed.orders,
+    total: feed.total,
+    totalToday: feed.totalToday
+  })
+);
+
+export const selectIsFeedLoading = createSelector(
+  [selectFeed],
+  (feed): boolean => feed.isLoading
+);

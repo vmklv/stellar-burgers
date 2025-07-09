@@ -1,5 +1,6 @@
 import { RootState } from '../store';
 import { TIngredient } from '@utils-types';
+import { createSelector } from '@reduxjs/toolkit';
 
 export const selectIngredients = (state: RootState): TIngredient[] =>
   state.ingredients.items;
@@ -7,11 +8,17 @@ export const selectIngredients = (state: RootState): TIngredient[] =>
 export const selectIsIngredientsLoading = (state: RootState): boolean =>
   state.ingredients.isLoading;
 
-export const selectBuns = (state: RootState): TIngredient[] =>
-  state.ingredients.items.filter((item) => item.type === 'bun');
+const selectIngredientsItems = (state: RootState): TIngredient[] =>
+  state.ingredients.items;
 
-export const selectSauces = (state: RootState): TIngredient[] =>
-  state.ingredients.items.filter((item) => item.type === 'sauce');
+export const selectBuns = createSelector([selectIngredientsItems], (items) =>
+  items.filter((item) => item.type === 'bun')
+);
 
-export const selectMains = (state: RootState): TIngredient[] =>
-  state.ingredients.items.filter((item) => item.type === 'main');
+export const selectSauces = createSelector([selectIngredientsItems], (items) =>
+  items.filter((item) => item.type === 'sauce')
+);
+
+export const selectMains = createSelector([selectIngredientsItems], (items) =>
+  items.filter((item) => item.type === 'main')
+);

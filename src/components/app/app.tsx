@@ -1,10 +1,11 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   BrowserRouter,
   Routes,
   Route,
   useLocation,
-  useNavigate
+  useNavigate,
+  useParams
 } from 'react-router-dom';
 import '../../index.css';
 import styles from './app.module.css';
@@ -18,6 +19,8 @@ import {
   ResetPassword,
   Profile,
   ProfileOrders,
+  IngredientDetailsPage,
+  OrderInfoPage,
   NotFound404
 } from '@pages';
 
@@ -29,6 +32,10 @@ import {
   ProtectedRoute
 } from '@components';
 
+import { useAppDispatch, useAppSelector } from '../../services/store';
+import { selectIsAuth } from '../../services/selectors/user';
+import { fetchUser } from '../../services/slices/user';
+
 const AppRoutes: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,11 +43,22 @@ const AppRoutes: FC = () => {
 
   const closeModal = () => navigate(-1);
 
+  const OrderInfoModal: FC = () => {
+    const { number } = useParams<{ number: string }>();
+    return (
+      <Modal onClose={closeModal} title={`#${number}`}>
+        <OrderInfo />
+      </Modal>
+    );
+  };
+
   return (
     <>
       <Routes location={state?.background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfoPage />} />
+        <Route path='/ingredients/:id' element={<IngredientDetailsPage />} />
         <Route
           path='/login'
           element={
@@ -89,19 +107,20 @@ const AppRoutes: FC = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfoPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
       {state?.background && (
         <Routes>
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal onClose={closeModal} title=''>
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route path='/feed/:number' element={<OrderInfoModal />} />
           <Route
             path='/ingredients/:id'
             element={
@@ -114,9 +133,7 @@ const AppRoutes: FC = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal onClose={closeModal} title=''>
-                  <OrderInfo />
-                </Modal>
+                <OrderInfoModal />
               </ProtectedRoute>
             }
           />
@@ -126,13 +143,24 @@ const AppRoutes: FC = () => {
   );
 };
 
-const App: FC = () => (
-  <BrowserRouter>
-    <div className={styles.app}>
-      <AppHeader />
-      <AppRoutes />
-    </div>
-  </BrowserRouter>
-);
+const App: FC = () => {
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
+
+  useEffect(() => {
+    if (!isAuth && localStorage.getItem('refreshToken')) {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, isAuth]);
+
+  return (
+    <BrowserRouter>
+      <div className={styles.app}>
+        <AppHeader />
+        <AppRoutes />
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;
