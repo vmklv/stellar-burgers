@@ -4,7 +4,8 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate
+  useNavigate,
+  useParams
 } from 'react-router-dom';
 import '../../index.css';
 import styles from './app.module.css';
@@ -41,6 +42,15 @@ const AppRoutes: FC = () => {
   const state = location.state as { background?: Location } | undefined;
 
   const closeModal = () => navigate(-1);
+
+  const OrderInfoModal: FC = () => {
+    const { number } = useParams<{ number: string }>();
+    return (
+      <Modal onClose={closeModal} title={`#${number}`}> 
+        <OrderInfo />
+      </Modal>
+    );
+  };
 
   return (
     <>
@@ -110,14 +120,7 @@ const AppRoutes: FC = () => {
 
       {state?.background && (
         <Routes>
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal onClose={closeModal} title=''>
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route path='/feed/:number' element={<OrderInfoModal />} />
           <Route
             path='/ingredients/:id'
             element={
@@ -130,9 +133,7 @@ const AppRoutes: FC = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal onClose={closeModal} title=''>
-                  <OrderInfo />
-                </Modal>
+                <OrderInfoModal />
               </ProtectedRoute>
             }
           />

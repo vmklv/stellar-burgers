@@ -83,6 +83,7 @@ export const OrderInfoPage: FC = () => {
 
   return (
     <main className={styles.containerMain}>
+      <p className='text text_type_digits-default pb-6'>#{number}</p>
       <OrderInfoUI orderInfo={orderInfo} />
     </main>
   );
