@@ -4,11 +4,17 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useAppSelector } from '../../services/store';
-import { selectFeedOrders, selectIngredients } from '../../services/selectors';
+import {
+  selectFeedOrders,
+  selectProfileOrders,
+  selectIngredients
+} from '../../services/selectors';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
-  const orders = useAppSelector(selectFeedOrders);
+  const feedOrders = useAppSelector(selectFeedOrders);
+  const profileOrders = useAppSelector(selectProfileOrders);
+  const orders = [...feedOrders, ...profileOrders];
   const ingredients: TIngredient[] = useAppSelector(selectIngredients);
   const orderData = orders.find((item) => item.number === Number(number));
 

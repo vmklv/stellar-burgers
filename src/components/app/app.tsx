@@ -46,7 +46,7 @@ const AppRoutes: FC = () => {
   const OrderInfoModal: FC = () => {
     const { number } = useParams<{ number: string }>();
     return (
-      <Modal onClose={closeModal} title={`#${number}`}> 
+      <Modal onClose={closeModal} title={`#${number}`}>
         <OrderInfo />
       </Modal>
     );
