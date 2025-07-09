@@ -18,6 +18,8 @@ import {
   ResetPassword,
   Profile,
   ProfileOrders,
+  IngredientDetailsPage,
+  OrderInfoPage,
   NotFound404
 } from '@pages';
 
@@ -45,6 +47,8 @@ const AppRoutes: FC = () => {
       <Routes location={state?.background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfoPage />} />
+        <Route path='/ingredients/:id' element={<IngredientDetailsPage />} />
         <Route
           path='/login'
           element={
@@ -90,6 +94,14 @@ const AppRoutes: FC = () => {
           element={
             <ProtectedRoute>
               <ProfileOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfoPage />
             </ProtectedRoute>
           }
         />
