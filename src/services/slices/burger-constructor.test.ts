@@ -2,7 +2,8 @@ import {
   burgerConstructorReducer,
   addIngredient,
   removeIngredient,
-  moveIngredientUp
+  moveIngredientUp,
+  moveIngredientDown
 } from './burger-constructor';
 import { TIngredient } from '../../utils/types';
 
@@ -43,5 +44,14 @@ describe('burgerConstructor slice', () => {
     state = burgerConstructorReducer(state, second);
     state = burgerConstructorReducer(state, moveIngredientUp(1));
     expect(state.ingredients[0].id).toEqual(second.payload.id);
+  });
+
+  it('should move ingredient down', () => {
+    const first = addIngredient(ingredientA);
+    const second = addIngredient(ingredientB);
+    let state = burgerConstructorReducer(undefined, first);
+    state = burgerConstructorReducer(state, second);
+    state = burgerConstructorReducer(state, moveIngredientDown(0));
+    expect(state.ingredients[1].id).toEqual(first.payload.id);
   });
 });
