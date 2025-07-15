@@ -11,6 +11,13 @@ describe('Burger constructor flow', () => {
     cy.wait('@getIngredients');
   });
 
+  it('displays ingredients list', () => {
+    cy.contains('h3', 'Булки').should('exist');
+    cy.contains('li', 'Флюоресцентная булка R2-D3').should('exist');
+    cy.contains('li', 'Сыр с астероидной плесенью').should('exist');
+  });
+
+
   it('adds bun and filling to constructor', () => {
     cy.contains('li', 'Флюоресцентная булка R2-D3').find('button').click();
     cy.contains('li', 'Сыр с астероидной плесенью').find('button').click();
